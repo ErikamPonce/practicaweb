@@ -31,43 +31,44 @@ RUN composer install \
     --ignore-platform-reqs
 
 ########################################
-# Stage 3: runtime image (PHP-FPM)
+# Stage 3: runtime image
 ########################################
-FROM php:8.3-fpm-alpine AS app
+FROM php:8.3-fpm-alpine
 
 WORKDIR /var/www/html
 
-# System deps + PHP extensions required by Laravel + MySQL
 RUN apk add --no-cache \
-        libpng-dev \
-        libzip-dev \
-        libxml2-dev \
-        oniguruma-dev \
-        icu-dev \
-        freetype-dev \
-        libjpeg-turbo-dev \
-        bash \
-        curl \
+    libpng-dev \
+    libzip-dev \
+    libxml2-dev \
+    oniguruma-dev \
+    icu-dev \
+    freetype-dev \
+    libjpeg-turbo-dev \
+    bash \
+    curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j"$(nproc)" \
-        pdo_mysql \
-        mbstring \
-        exif \
-        pcntl \
-        bcmath \
-        gd \
-        zip \
-        intl \
+    pdo_mysql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    zip \
+    intl \
     && rm -rf /var/cache/apk/*
 
-# Copy application code
+# Copiar el proyecto
 COPY . .
 
-# Copy vendor/ from the composer stage and built assets from the frontend stage
+# Dependencias PHP
 COPY --from=vendor /app/vendor ./vendor
+
+# Assets de Vite
 COPY --from=frontend /app/public/build ./public/build
 
-# Permissions for storage & bootstrap cache
+# Permisos
 RUN addgroup -g 1000 www \
     && adduser -G www -g www -s /bin/sh -D www \
     && chown -R www:www /var/www/html \
@@ -78,7 +79,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 USER www
 
-EXPOSE 9000
+EXPOSE 10000
 
 ENTRYPOINT ["entrypoint.sh"]
-CMD ["php-fpm"]
+
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
