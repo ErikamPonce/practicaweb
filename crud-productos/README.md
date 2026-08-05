@@ -9,6 +9,44 @@ roles (Administrador / Usuario).
 - Docker y Docker Compose (recomendado), **o**
 - PHP 8.1+, Composer, Node.js 18+/npm, y MySQL 8 (para correr sin Docker)
 
+## Base de datos: local vs. en la nube
+
+Este proyecto **no incluye un contenedor de MySQL** en `docker-compose.yml`:
+la app se conecta directamente a la base de datos que definas en `DB_HOST` /
+`DB_PORT` / `DB_DATABASE` / `DB_USERNAME` / `DB_PASSWORD` dentro de `.env`,
+sea local o en la nube (ej. FreeMySQLDatabase.com, freemysqlhosting.net,
+AWS RDS, PlanetScale, etc.).
+
+Pasos para usar una base en la nube (ejemplo con FreeMySQLDatabase):
+
+1. Crea la base en el panel del proveedor y copia el host, puerto, nombre
+   de base, usuario y contraseña que te asignen.
+2. Pégalos en tu `.env`:
+
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=sqlXXX.freemysqlhosting.net
+   DB_PORT=3306
+   DB_DATABASE=sqlXXX
+   DB_USERNAME=sqlXXX
+   DB_PASSWORD=tu_password_real
+   ```
+
+3. Levanta la app normalmente:
+
+   ```bash
+   docker compose up --build
+   ```
+
+   El `entrypoint` espera a que la base responda y corre las migraciones
+   automáticamente contra la base en la nube.
+
+> **Nota:** los planes gratuitos como FreeMySQLDatabase suelen tener límites
+> muy bajos de almacenamiento (~5 MB) y de conexiones simultáneas — son
+> útiles para pruebas, no para producción real. Si el proveedor exige
+> conexión por SSL/TLS, deberás añadir `DB_SSLMODE`/certificados según su
+> documentación (Laravel lo soporta vía `sslmode` en `config/database.php`).
+
 ## Puesta en marcha con Docker (recomendado)
 
 1. Copia el archivo de entorno de ejemplo y complétalo:
@@ -18,7 +56,8 @@ roles (Administrador / Usuario).
    ```
 
    Como mínimo define:
-   - `DB_PASSWORD` / `DB_ROOT_PASSWORD` (contraseñas de MySQL)
+   - `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` (datos de tu base
+     de datos, local o en la nube)
    - `ADMIN_EMAIL` / `ADMIN_PASSWORD` (usuario Administrador inicial)
 
 2. Levanta todo con un solo comando:
