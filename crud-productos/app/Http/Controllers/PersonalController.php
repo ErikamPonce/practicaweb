@@ -24,14 +24,14 @@ class PersonalController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'IdDatosP' => 'required|exists:datos_personales,IdDatosP',
             'IdTipo' => 'required|exists:tipos_personal,idTipo',
             'ClaveEmp' => 'required|string|size:10|unique:personal',
             'Status' => 'required|boolean',
         ]);
 
-        Personal::create($request->all());
+        Personal::create($validated);
         return redirect()->route('personal.index')->with('success', 'Personal creado exitosamente.');
     }
 
@@ -50,12 +50,12 @@ class PersonalController extends Controller
 
     public function update(Request $request, Personal $personal)
     {
-        $request->validate([
+        $validated = $request->validate([
             'IdTipo' => 'required|exists:tipos_personal,idTipo',
             'Status' => 'required|boolean',
         ]);
 
-        $personal->update($request->all());
+        $personal->update($validated);
         return redirect()->route('personal.index')->with('success', 'Personal actualizado exitosamente.');
     }
 

@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             AlumnoSeeder::class,
             PersonalSeeder::class,
             HorarioSeeder::class,
+            AdminUserSeeder::class,
         ]);
     }
 }

@@ -14,11 +14,12 @@
             <a class="navbar-brand" href="{{ url('/') }}">
                 <i class="fas fa-school"></i> Sistema Escolar
             </a>
-            @auth
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
+                @auth
+                @if(auth()->user()->hasRole('Administrador'))
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ route('escuelas.index') }}"><i class="fas fa-building"></i> Escuelas</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('alumnos.index') }}"><i class="fas fa-users"></i> Alumnos</a></li>
@@ -27,7 +28,8 @@
                     <li class="nav-item"><a class="nav-link" href="{{ route('asignaturas.index') }}"><i class="fas fa-book"></i> Asignaturas</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('horarios.index') }}"><i class="fas fa-clock"></i> Horarios</a></li>
                 </ul>
-            @endauth
+                @endif
+                @endauth
 
                 <ul class="navbar-nav">
                     @guest

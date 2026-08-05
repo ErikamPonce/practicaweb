@@ -20,14 +20,14 @@ class HorarioController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'Dia' => 'required|string|max:10',
             'HorarioInicio' => 'required|date_format:H:i:s',
             'HorarioFin' => 'required|date_format:H:i:s|after:HorarioInicio',
             'Aula' => 'required|string|max:50',
         ]);
 
-        Horario::create($request->all());
+        Horario::create($validated);
         return redirect()->route('horarios.index')->with('success', 'Horario creado exitosamente.');
     }
 
@@ -43,14 +43,14 @@ class HorarioController extends Controller
 
     public function update(Request $request, Horario $horario)
     {
-        $request->validate([
+        $validated = $request->validate([
             'Dia' => 'required|string|max:10',
             'HorarioInicio' => 'required|date_format:H:i:s',
             'HorarioFin' => 'required|date_format:H:i:s|after:HorarioInicio',
             'Aula' => 'required|string|max:50',
         ]);
 
-        $horario->update($request->all());
+        $horario->update($validated);
         return redirect()->route('horarios.index')->with('success', 'Horario actualizado exitosamente.');
     }
 

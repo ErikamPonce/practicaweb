@@ -26,7 +26,7 @@ class EscuelaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'CCT' => 'required|string|size:10|unique:escuelas',
             'Nombre' => 'required|string|max:100',
             'Telefono' => 'required|string|size:10',
@@ -39,7 +39,7 @@ class EscuelaController extends Controller
             'CP' => 'required|integer',
         ]);
 
-        Escuela::create($request->all());
+        Escuela::create($validated);
         return redirect()->route('escuelas.index')->with('success', 'Escuela creada exitosamente.');
     }
 
@@ -59,7 +59,7 @@ class EscuelaController extends Controller
 
     public function update(Request $request, Escuela $escuela)
     {
-        $request->validate([
+        $validated = $request->validate([
             'Nombre' => 'required|string|max:100',
             'Telefono' => 'required|string|size:10',
             'Email' => 'required|email|max:100',
@@ -71,7 +71,7 @@ class EscuelaController extends Controller
             'CP' => 'required|integer',
         ]);
 
-        $escuela->update($request->all());
+        $escuela->update($validated);
         return redirect()->route('escuelas.index')->with('success', 'Escuela actualizada exitosamente.');
     }
 

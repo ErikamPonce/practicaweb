@@ -24,14 +24,14 @@ class AlumnoController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'Matricula' => 'required|string|size:20|unique:alumnos',
             'IdCarrera' => 'required|exists:carreras,IdCarrera',
             'IdDatosP' => 'required|exists:datos_personales,IdDatosP',
             'Status' => 'required|in:A,B,G',
         ]);
 
-        Alumno::create($request->all());
+        Alumno::create($validated);
         return redirect()->route('alumnos.index')->with('success', 'Alumno creado exitosamente.');
     }
 
@@ -50,12 +50,12 @@ class AlumnoController extends Controller
 
     public function update(Request $request, Alumno $alumno)
     {
-        $request->validate([
+        $validated = $request->validate([
             'IdCarrera' => 'required|exists:carreras,IdCarrera',
             'Status' => 'required|in:A,B,G',
         ]);
 
-        $alumno->update($request->all());
+        $alumno->update($validated);
         return redirect()->route('alumnos.index')->with('success', 'Alumno actualizado exitosamente.');
     }
 
